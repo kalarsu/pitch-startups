@@ -7,9 +7,9 @@ export default async function Home({ searchParams }: {searchParams: Promise<{que
     const query = (await searchParams).query;
     const posts = [
         {
-            _createdAt: "Yesterday",
+            _createdAt: new Date(),
             views: 56,
-            author: {_id: 1},
+            author: {_id: 1, name: "Ethan Aragon"},
             description: "This is my startup",
             image: "https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F2e0280e7-7466-4036-8aeb-0d527c986afe_1280x720.jpeg",
             category: "Robot",
