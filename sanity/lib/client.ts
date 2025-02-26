@@ -6,5 +6,6 @@ export const client = createClient({
   projectId,
   dataset,
   apiVersion,
-  useCdn: false, // Set to false if statically generating pages, using ISR or tag-based revalidation, (Set to true: ISR: Sanity will cache data for 60 second then revalidate the content after 60 seconds: ISR: Incremental Static Regeneration)
+  useCdn: true, // Set to false (fetch live  SSR:Server Side Rendering: provide fresh data with each user request) if statically generating page, using ISR or tag-based revalidation,
+  // (Set to true: ISR (incremental static Regeneration): Sanity will cache data for 60 second then revalidate the content after 60 seconds: ISR: Incremental Static Regeneration)
 })

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {Suspense} from 'react'
 import {client} from "@/sanity/lib/client";
 import {STARTUP_BY_ID_QUERY} from "@/sanity/lib/queries";
 import {notFound} from "next/navigation";
@@ -7,13 +7,15 @@ import Link from "next/link";
 import {author} from "@/sanity/schemaTypes/author";
 import Image from "next/image";
 import markdownit from "markdown-it";
+import {Skeleton} from "@sanity/ui";
+import View from "@/components/View";
 
 const md = markdownit()
 
 export const  experimental_ppr = true;
 
-const Page = async ({params}: { params: Promise<{ id: string }>}) => {
-    const id = (await params).id;
+const Page = async ({params}: { params: { id: string }}) => {
+    const id =  params.id;
     const post = await client.fetch(STARTUP_BY_ID_QUERY, { id });
     if (!post) return notFound();
     const parsedContent = md.render(post?.pitch || '');
@@ -35,15 +37,15 @@ const Page = async ({params}: { params: Promise<{ id: string }>}) => {
                     <div className="flex-between gap-5">
                         <Link className="flex gap-2 items-center mb-3" href={`/user/${post.author?._id}`}>
                             <Image
-                                src={post.author.image}
+                                src={post.author?.image}
                                 alt="avatar"
                                 width={64}
                                 height={64}
                                 className="rounded-full drop-shadow-lg"
                             />
                             <div>
-                                <p className="text-20-medium-">{post.author.name}</p>
-                                <p className="text-16-medium !text-black-300">@{post.author.username}</p>
+                                <p className="text-20-medium-">{post.author?.name}</p>
+                                <p className="text-16-medium !text-black-300">@{post.author?.username}</p>
                             </div>
                         </Link>
                         <p className="category-tag">{post.category}</p>
@@ -60,6 +62,9 @@ const Page = async ({params}: { params: Promise<{ id: string }>}) => {
                 <hr className="divider" />
 
                 {/* TODO: EDITOR SELECTED STARTUPS*/}
+                {/*<Suspense fallback={<Skeleton className="view_skeleton" />}>*/}
+                    <View id={id} />
+                {/*</Suspense>*/}
 
             </section>
         </>
