@@ -14,6 +14,10 @@ const config: Config = {
         xs: "475px",
       },
       colors: {
+        border: "hsl(var(--border))",
+        ring: "hsl(var(--ring))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
         primary: {
           "100": "#FFE8F0",
           DEFAULT: "#EE2B69",
