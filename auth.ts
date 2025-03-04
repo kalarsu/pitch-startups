@@ -8,12 +8,16 @@ import {writeClient} from "@/sanity/lib/write-client";
 export const {handlers, auth, signIn, signOut} = NextAuth({
     providers: [GitHub],
     callbacks: {
-        async signIn({user: {name, email, image}, profile: {id, login, bio}}) {
+        async signIn({
+             user: {name, email, image},
+             profile: {id, login, bio}
+        }) {
+
             const existingUser = await client
-                .withConfig({ useCdn: false })
+                .withConfig({useCdn: false})
                 .fetch(AUTHOR_BY_GITHUB_ID_QUERY, {
-                id,
-            });
+                    id,
+                });
             if (!existingUser) {
                 await writeClient.create({
                     _type: "author",
@@ -29,15 +33,24 @@ export const {handlers, auth, signIn, signOut} = NextAuth({
             return true; //return true to continue to the signin process
         },
 
-        async jwt({ token, account, profile }) {
+        async jwt({token, account, profile}) {
+            console.log("Inside JWT callback");
+            console.log("Account:", account); // Should be `undefined` after first login
+            console.log("Profile:", profile); // Should be `undefined` after first login
+
             if (account && profile) {
+                console.log("Fetching user from Sanity...");
                 const user = await client
-                    .withConfig({ useCdn: false })
-                    .fetch(AUTHOR_BY_GITHUB_ID_QUERY, { id: profile?.id });
-                //console.log("Fetched user:", user);
-                token.id = user?._id || profile.id;
+                    .withConfig({useCdn: false})
+                    .fetch(AUTHOR_BY_GITHUB_ID_QUERY, {id: profile?.id});
+
+                token.id = user?._id || "";
+                token.githubProfile = profile;
+                console.log("Fetched user id:", user?._id, ",profile.id", profile.id);
+            }else{
+                console.log("Skipping Sanity fetch because account/profile is missing");
             }
-           //console.log("JWT token:", token);
+            console.log("Returning JWT token:", token);
             return token;
         },
 
@@ -46,9 +59,10 @@ export const {handlers, auth, signIn, signOut} = NextAuth({
         //     return session;
         // },
 
-        async session({ session, token }) {
+        async session({session, token}) {
             session.user.id = token.id;
-            //console.log("Session callback:", session);
+            Object.assign(session, {id: token.id});
+            console.log("Session callback token:", token.id);
             return session;
         }
     },

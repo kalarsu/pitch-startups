@@ -33,13 +33,13 @@ const StartupForm = () => {
             await formSchema.parseAsync(formValues); //validate form entries
 
             const result = await createPitch(prevState, formData, pitch);
-            console.log("result:", result);
-
-            if(result.status === "success"){
-                toast("toast created", {
+            if(result.status == "SUCCESS"){
+                toast({
+                    title: "Success",
                     description: "Your startup pitch has been created successfully.",
-                })
-                router.push(`/startup/${result.id}`);
+                });
+
+                router.push(`/startup/${result._id}`);
             }
             return result;
 
@@ -51,18 +51,13 @@ const StartupForm = () => {
                 toast("toast created", {
                     description: "Please check your inputs and try again",
                 })
-
                 return {...prevState, error: "Validation error", status: "ERROR"};
+            }else{
+                toast("toast created", {
+                    description: "An unexpected error has occurred",
+                })
             }
-
-            toast("toast created", {
-                description: "An unexpected error has occurred",
-            })
-
             return {...prevState, error: "An unexpected error has occurred", status: "ERROR"};
-
-        }finally{
-
         }
     }
 

@@ -22,6 +22,7 @@ export const createPitch = async(
     );
 
     const slug = slugify(title as string, {lower: true, strict: true});
+    console.log("action.ts:session.id:", session?.id);
 
     try{
         const startup = {
@@ -35,7 +36,7 @@ export const createPitch = async(
             },
             author: {
                 _type: "reference",
-                _ref: session?.id,
+                _ref: String(session?.id),
             },
             pitch,
         };
