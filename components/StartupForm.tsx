@@ -12,8 +12,6 @@ import {toast} from "sonner";
 import {useRouter} from "next/navigation";
 import {createPitch} from "@/lib/actions";
 
-
-
 const StartupForm = () => {
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [pitch, setPitch] = useState("");
@@ -34,8 +32,7 @@ const StartupForm = () => {
 
             const result = await createPitch(prevState, formData, pitch);
             if(result.status == "SUCCESS"){
-                toast({
-                    title: "Success",
+                toast("Success!", {
                     description: "Your startup pitch has been created successfully.",
                 });
 
@@ -48,15 +45,16 @@ const StartupForm = () => {
                 const fieldErrors = error.flatten().fieldErrors;
                 setErrors(fieldErrors as unknown as Record<string, string>);
 
-                toast("toast created", {
+                toast("Validation error", {
                     description: "Please check your inputs and try again",
-                })
+                });
                 return {...prevState, error: "Validation error", status: "ERROR"};
-            }else{
-                toast("toast created", {
-                    description: "An unexpected error has occurred",
-                })
             }
+
+            toast("Unexpected error", {
+                description: "Something went wrong. Please try again later.",
+            });
+
             return {...prevState, error: "An unexpected error has occurred", status: "ERROR"};
         }
     }
@@ -65,6 +63,7 @@ const StartupForm = () => {
         error: "",
         status: "INITIAL"
     });
+
 
     return (
         <form action={formAction} className="startup-form">

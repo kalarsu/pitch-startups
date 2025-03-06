@@ -1,23 +1,25 @@
+"use client";
+
+import updateViews from "@/app/actions/updateViews";
 import Ping from "@/components/Ping";
 import {client} from "@/sanity/lib/client";
 import {STARTUP_VIEW_QUERY} from "@/sanity/lib/queries";
-import {writeClient} from "@/sanity/lib/write-client";
-import {unstable_after as after} from "next/server"; //latest Next.js use 'after' instead of 'unstable_after' 2/25/2025
+import {useEffect, useState} from "react";
 
+const View = ({id, views}: { id:string, views:number}) => {
+    const [totalViews, setTotalView] = useState<number | null>(null);
 
-const View = async ({id}: { id: string }) => {
-    const {views: totalViews} = await client
-        .withConfig({useCdn: false})
-        .fetch(STARTUP_VIEW_QUERY, {id});
-    // PPR: {useCdn: false} Fetches live SSR:Server Side Rendering, real-time data directly from Sanity's API. PPR: Partial PreRendering
-    // Non-PPR {useCdn: true} default, Fetches data from Sanity's cached Content Delivery Network (CDN) for faster responses.
-
-    //update the number of views
-    after( async() => await writeClient
-        .patch(id)
-        .set({ views: totalViews +1 })
-        .commit())
-    //patch is used to "update"
+    useEffect(() => {
+        const fetchAndUpdateViews = async ()=>{
+            try{
+                setTotalView(views);
+                await updateViews(id, views);
+            }catch (e) {
+                console.error("Fail on Fetching and Updating Views",e);
+            }
+        };
+        fetchAndUpdateViews();
+    }, [id]);
 
     return (
         <div className="view-container">
