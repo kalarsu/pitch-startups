@@ -1,9 +1,9 @@
 import {defineQuery} from "next-sanity";
 
 export const STARTUPS_QUERY =
-    defineQuery(`*[_type=="startup" && defined(slug.current) && !defined($search) 
+    defineQuery(`*[_type=="startup" && defined(slug.current) && (!defined($search) 
         || title match $search || category match $search 
-        || author->name match $search ] | order(_createdAt desc){
+        || author->name match $search) ] | order(_createdAt desc){
     _id, 
     title, 
     slug, 
@@ -32,11 +32,6 @@ export const STARTUP_BY_ID_QUERY =
         image,
         pitch,
 }`);
-
-export interface StartupView{
-    _id: string;
-    views: number;
-}
 
 export const STARTUP_VIEW_QUERY =
     defineQuery(`*[_type=="startup" && _id == $id][0]{
@@ -87,16 +82,19 @@ export const PLAYLIST_BY_SLUG_QUERY =
     defineQuery(`*[_type == "playlist" && slug.current == $slug][0]{
   _id,
   title,
-  slug,
+  slug {
+    current,
+  },
   select[]->{
     _id,
-    _createdAt,
     title,
-    slug,
+    slug {
+    current,
+    },
+    _createdAt,
     author->{
       _id,
       name,
-      slug,
       image,
       bio
     },
@@ -104,6 +102,5 @@ export const PLAYLIST_BY_SLUG_QUERY =
     description,
     category,
     image,
-    pitch
   }
 }`);

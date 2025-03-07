@@ -5,10 +5,29 @@ import {EyeIcon} from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import {Button} from "@/components/ui/button";
-import {Author, Startup} from "@/sanity.types";
 import {Skeleton} from "@sanity/ui";
 
-export type StartupTypeCard = Omit<Startup, "author"> & {author?: Author};
+// export type StartupTypeCard = Omit<Startup, "author" | "pitch"> & {
+//     author?: Pick<Author, "_id" | "name" | "image" | "bio"> | null;
+//     image?: string | null;  // Allow null values
+// };
+
+export type StartupTypeCard = {
+    _id: string;
+    title: string | null;
+    slug?: { current: string | null } | null;
+    _createdAt: string;
+    author?: {
+        _id: string;
+        name?: string | null;
+        image?: string | null;
+        bio?: string | null;
+    } | null;
+    views?: number | null;
+    description?: string | null;
+    category?: string | null;
+    image?: string | null;
+};
 
 const StartupCard = ({post} : {post: StartupTypeCard}) => {
     //destructure the property so no need to repeatedly accessing 'post'
@@ -35,8 +54,8 @@ const StartupCard = ({post} : {post: StartupTypeCard}) => {
                     </Link>
                 </div>
                 <Link href={`/user/${author?._id}`}>
-                    <Image src={author?.image!}
-                           alt={author?.name!}
+                    <Image src={author?.image ?? ""}
+                           alt={author?.name ?? ""}
                            width={48}
                            height={48} className="rounded-full" />
                 </Link>
@@ -45,7 +64,12 @@ const StartupCard = ({post} : {post: StartupTypeCard}) => {
                 <p className="startup-card_desc">
                     {description}
                 </p>
-                <img src={image} alt="placeholder" className="startup-card_img" />
+                <Image
+                    src={image ?? ""}
+                    alt="placeholder"
+                    width={100}
+                    height={100}
+                    className="startup-card_img" />
             </Link>
             <div className="flex-between gap-3 mt-5">
                 <Link href={`/?query=${category?.toLowerCase()}`}>

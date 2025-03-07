@@ -18,7 +18,7 @@ const StartupForm = () => {
     const isPending = false;
     const router = useRouter();
 
-    const handleFormSubmit =  async (prevState: any, formData: FormData) => {
+    const handleFormSubmit =  async (prevState: { error:string, status:string }, formData: FormData) => {
         try{
             const formValues = {
                 title: formData.get("title") as string,
@@ -59,7 +59,7 @@ const StartupForm = () => {
         }
     }
 
-    const [state , formAction] = useActionState(handleFormSubmit, {
+    const [formAction] = useActionState(handleFormSubmit, {
         error: "",
         status: "INITIAL"
     });

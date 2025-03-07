@@ -16,11 +16,13 @@ export const experimental_ppr = true;
 const Page = async ({params}: { params: Promise<{ id: string }> }) => {
     const {id} = await (params);
 
-    const [post, {select: editorPosts}, startupViews] = await Promise.all([
+    const [post, playListResult, startupViews] = await Promise.all([
         client.fetch(STARTUP_BY_ID_QUERY, {id}),
         client.fetch(PLAYLIST_BY_SLUG_QUERY, {slug: 'nominees'}),
         client.withConfig({useCdn: false}).fetch(STARTUP_VIEW_QUERY, {id})
     ]);
+
+    const editorPosts = playListResult?.select ?? [];
     //-----Parallel data fetching (Much faster than Sequential fetching)
     //object destructuring with aliasing {select: editorPosts}
 
@@ -40,9 +42,11 @@ const Page = async ({params}: { params: Promise<{ id: string }> }) => {
                 <p className="sub-heading !max-w-5xl">{post.description}</p>
             </section>
             <section className="section_container">
-                <img
+                <Image
                     src={post?.image ?? ""}
                     alt="thumbnail"
+                    width={100}
+                    height={100}
                     className="w-full h-auto rounded-xl"
                 />
                 <div className="space-y-5 mt-10 mx-auto">

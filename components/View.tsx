@@ -2,8 +2,6 @@
 
 import updateViews from "@/app/actions/updateViews";
 import Ping from "@/components/Ping";
-import {client} from "@/sanity/lib/client";
-import {STARTUP_VIEW_QUERY} from "@/sanity/lib/queries";
 import {useEffect, useState} from "react";
 
 const View = ({id, views}: { id:string, views:number}) => {
@@ -19,7 +17,7 @@ const View = ({id, views}: { id:string, views:number}) => {
             }
         };
         fetchAndUpdateViews();
-    }, [id]);
+    });
 
     return (
         <div className="view-container">

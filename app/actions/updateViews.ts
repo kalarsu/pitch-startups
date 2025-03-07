@@ -1,6 +1,5 @@
 "use server"
 
-import React from 'react'
 import {writeClient} from "@/sanity/lib/write-client";
 
 const UpdateViews = async(id: string, totalViews: number) => {
